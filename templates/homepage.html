@@ -3,8 +3,8 @@
         <title>To-Do List</title>
     </head>
     <body>
-        <h1>Your To-Do List</h1>
-        <form method="POST">
+        <h1>{{ .Title }}</h1>
+        <form method="POST" action="{{.Api.NewItem}}">
             <input name="description" id="id_new_item" placeholder="Enter a to-do item" />
         </form>
         <table id="id_new_table">

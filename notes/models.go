@@ -4,6 +4,10 @@ import (
 	"gorm.io/gorm"
 )
 
+type ApiAddress struct {
+	NewItem string
+}
+
 type TodoItem struct {
 	gorm.Model
 	Description string `gorm:"type:text"`

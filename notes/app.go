@@ -1,7 +1,10 @@
 package notes
 
 import (
+	"fmt"
+	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -24,24 +27,52 @@ func App(templatesDir string, dbPath string) *gin.Engine {
 	}
 
 	db.AutoMigrate(&TodoList{}, &TodoItem{})
-	db.Create(&TodoList{})
-	var defaultList TodoList
-	db.First(&defaultList)
 
 	r.LoadHTMLGlob(filepath.Join(templatesDir, "*.html"))
 
 	r.GET("/", func(c *gin.Context) {
-		items := getTodoItems(db, defaultList.ID)
-		c.HTML(200, "homepage.html", gin.H{
-			"Items": items,
+		apiAddress := ApiAddress{NewItem: "/new"}
+		c.HTML(http.StatusOK, "homepage.html", gin.H{
+			"Items": nil,
+			"Title": "Start a new to-do list",
+			"Api":   apiAddress,
 		})
 	})
 
-	r.POST("/", func(c *gin.Context) {
+	r.POST("/new", func(c *gin.Context) {
 		description := c.PostForm("description")
-		item := NewTodoItem(description, defaultList.ID)
-		db.Create(item)
-		c.Redirect(302, "/")
+		newList := TodoList{TodoItems: []TodoItem{}}
+		db.Create(&newList)
+		newItem := TodoItem{Description: description, TodoListID: newList.ID}
+		db.Create(&newItem)
+		redirectUrl := fmt.Sprintf("/%d/", newList.ID)
+		c.Redirect(http.StatusFound, redirectUrl)
 	})
+
+	r.GET("/:id/", func(c *gin.Context) {
+		id := c.Param("id")
+		var list TodoList
+		db.First(&list, id)
+		items := getTodoItems(db, list.ID)
+		apiAddress := ApiAddress{NewItem: fmt.Sprintf("/%s/new", id)}
+		c.HTML(200, "homepage.html", gin.H{
+			"Items": items,
+			"Title": "Your to-do list",
+			"Api":   apiAddress,
+		})
+	})
+
+	r.POST("/:id/new", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		}
+		description := c.PostForm("description")
+		newItem := TodoItem{Description: description, TodoListID: uint(id)}
+		db.Create(&newItem)
+		redirectUrl := fmt.Sprintf("/%d/", id)
+		c.Redirect(302, redirectUrl)
+	})
+
 	return r
 }
