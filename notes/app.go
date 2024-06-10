@@ -2,8 +2,8 @@ package notes
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func App() *gin.Engine {
@@ -14,8 +14,7 @@ func App() *gin.Engine {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&Item{})
-	db.AutoMigrate(&List{})
+	db.AutoMigrate(&TodoList{}, &TodoItem{})
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
