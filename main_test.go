@@ -12,7 +12,7 @@ import (
 
 func TestSetupRouter(t *testing.T) {
 	dbName := time.Now().Format("test20060102150405.db")
-	router := notes.App("./templates", dbName)
+	router := notes.App(dbName)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	router := notes.App("./templates", "./test.db")
+	router := notes.App("./tsdt.db")
 	err := router.Run("127.0.0.1:8000")
 	if err != nil {
 		panic(err)

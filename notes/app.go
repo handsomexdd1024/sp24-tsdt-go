@@ -18,7 +18,7 @@ func getTodoItems(db *gorm.DB, todoListID uint) []TodoItem {
 	return items
 }
 
-func App(templatesDir string, dbPath string) *gin.Engine {
+func App(dbPath string) *gin.Engine {
 	r := gin.Default()
 
 	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
@@ -28,7 +28,7 @@ func App(templatesDir string, dbPath string) *gin.Engine {
 
 	db.AutoMigrate(&TodoList{}, &TodoItem{})
 
-	r.LoadHTMLGlob(filepath.Join(templatesDir, "*.html"))
+	r.LoadHTMLGlob(filepath.Join("./templates", "*.html"))
 
 	r.GET("/", func(c *gin.Context) {
 		apiAddress := ApiAddress{NewItem: "/new"}
@@ -73,6 +73,8 @@ func App(templatesDir string, dbPath string) *gin.Engine {
 		redirectUrl := fmt.Sprintf("/%d/", id)
 		c.Redirect(302, redirectUrl)
 	})
+
+	r.Static("/static", "./static")
 
 	return r
 }

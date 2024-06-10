@@ -1,22 +1,42 @@
-<html>
-    <head>
-        <title>To-Do List</title>
-    </head>
-    <body>
-        <h1>{{ .Title }}</h1>
-        <form method="POST" action="{{.Api.NewItem}}">
-            <input name="description" id="id_new_item" placeholder="Enter a to-do item" />
-        </form>
-        <table id="id_new_table">
-            {{range $item := .Items}}
-            <tr>
-                <td>{{$item.Description}}</td>
-            </tr>
-            {{else}}
-            <tr>
-                <td>No items found.</td>
-            </tr>
-            {{end}}
-        </table> 
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>To-Do List</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href=/static/bootstrap/css/bootstrap.min.css rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 container-fluid py-5">
+                <div class="text-center">
+                    <h1>{{ .Title }}</h1>
+                    <form method="POST" action="{{.Api.NewItem}}">
+                        <input name="description" id="id_new_item" placeholder="Enter a to-do item"
+                            class="form-control input-lg" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <table id="id_new_table" class="table">
+                {{range $item := .Items}}
+                <tr>
+                    <td>{{$item.Description}}</td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td>No items found.</td>
+                </tr>
+                {{end}}
+            </table>
+        </div>
+    </div>
+</body>
+
 </html>
