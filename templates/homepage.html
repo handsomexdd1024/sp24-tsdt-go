@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>To-Do List</title>
+    </head>
+    <body>
+        <h1>Your To-Do List</h1>
+        <form method="POST">
+            <input name="description" id="id_new_item" placeholder="Enter a to-do item" />
+        </form>
+        <table id="id_new_table">
+            {{range $item := .Items}}
+            <tr>
+                <td>{{$item.Description}}</td>
+            </tr>
+            {{else}}
+            <tr>
+                <td>No items found.</td>
+            </tr>
+            {{end}}
+        </table> 
+    </body>
+</html>
