@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/handsomexdd1024/sp24-tsdt-go/notes"
 )
 
 func TestSetupRouter(t *testing.T) {
-	router := setupRouter()
+	router := notes.App()
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
