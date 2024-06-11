@@ -26,7 +26,10 @@ func App(dbPath string) *gin.Engine {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&TodoList{}, &TodoItem{})
+	err = db.AutoMigrate(&TodoList{}, &TodoItem{})
+	if err != nil {
+		panic(err)
+	}
 
 	r.LoadHTMLGlob(filepath.Join("./templates", "*.tmpl"))
 
