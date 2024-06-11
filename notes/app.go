@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// query all todo items from given todo list id
+// query all items from given list id
 func getTodoItems(db *gorm.DB, todoListID uint) []TodoItem {
 	var items []TodoItem
 	db.Where("todo_list_id = ?", todoListID).Find(&items)
@@ -28,11 +28,11 @@ func App(dbPath string) *gin.Engine {
 
 	db.AutoMigrate(&TodoList{}, &TodoItem{})
 
-	r.LoadHTMLGlob(filepath.Join("./templates", "*.html"))
+	r.LoadHTMLGlob(filepath.Join("./templates", "*.tmpl"))
 
 	r.GET("/", func(c *gin.Context) {
 		apiAddress := ApiAddress{NewItem: "/new"}
-		c.HTML(http.StatusOK, "homepage.html", gin.H{
+		c.HTML(http.StatusOK, "homepage.tmpl", gin.H{
 			"Items": nil,
 			"Title": "Start a new to-do list",
 			"Api":   apiAddress,
@@ -50,12 +50,15 @@ func App(dbPath string) *gin.Engine {
 	})
 
 	r.GET("/:id/", func(c *gin.Context) {
-		id := c.Param("id")
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		}
 		var list TodoList
 		db.First(&list, id)
 		items := getTodoItems(db, list.ID)
-		apiAddress := ApiAddress{NewItem: fmt.Sprintf("/%s/new", id)}
-		c.HTML(200, "homepage.html", gin.H{
+		apiAddress := ApiAddress{NewItem: fmt.Sprintf("/%d/new", id)}
+		c.HTML(200, "homepage.tmpl", gin.H{
 			"Items": items,
 			"Title": "Your to-do list",
 			"Api":   apiAddress,
