@@ -1,13 +1,13 @@
-package notes_test
+package models_test
 
 import (
 	"os"
 	"testing"
 	"time"
 
-	"github.com/handsomexdd1024/sp24-tsdt-go/notes"
+	. "github.com/handsomexdd1024/sp24-tsdt-go/db"
+	. "github.com/handsomexdd1024/sp24-tsdt-go/models"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -15,11 +15,10 @@ func createTempDatabase() (*gorm.DB, string) {
 	// create a temporary database with current time
 	// to avoid conflict with other tests
 	dbName := time.Now().Format("test20060102150405.db")
-	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
+	db, err := InitDB(dbName)
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&notes.TodoList{}, &notes.TodoItem{})
 	return db, dbName
 }
 
@@ -34,12 +33,12 @@ func removeDatabase(dbName string) {
 
 func TestNewTodoList(t *testing.T) {
 	db, dbName := createTempDatabase()
-	list := notes.NewTodoList()
+	list := NewTodoList()
 	// save the new todo list
 	db.Create(list)
 
 	// read the todo list from the database
-	var savedList notes.TodoList
+	var savedList TodoList
 	db.First(&savedList)
 
 	assert.NotEqual(t, 0, savedList.ID)
@@ -48,16 +47,16 @@ func TestNewTodoList(t *testing.T) {
 
 func TestNewTodoItem(t *testing.T) {
 	db, dbName := createTempDatabase()
-	list := notes.NewTodoList()
+	list := NewTodoList()
 	// save the new todo list
 	db.Create(list)
 
-	item := notes.NewTodoItem("Buy Milk", list.ID)
+	item := NewTodoItem("Buy Milk", list.ID)
 	// save the new todo item
 	db.Create(item)
 
 	// read the todo item from the database
-	var savedItem notes.TodoItem
+	var savedItem TodoItem
 	db.First(&savedItem)
 
 	assert.NotEqual(t, 0, savedItem.ID)

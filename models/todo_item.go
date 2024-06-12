@@ -1,12 +1,8 @@
-package notes
+package models
 
 import (
 	"gorm.io/gorm"
 )
-
-type ApiAddress struct {
-	NewItem string
-}
 
 type TodoItem struct {
 	gorm.Model
