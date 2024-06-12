@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/handsomexdd1024/sp24-tsdt-go/router"
+	. "github.com/handsomexdd1024/sp24-tsdt-go/router"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestApp(t *testing.T) {
 	dbName := time.Now().Format("test20060102150405.db")
-	router := router.App(dbName)
+	router := App(dbName)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

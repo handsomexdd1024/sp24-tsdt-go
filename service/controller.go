@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	tsdtModels "github.com/handsomexdd1024/sp24-tsdt-go/models"
+	. "github.com/handsomexdd1024/sp24-tsdt-go/models"
 	"gorm.io/gorm"
 )
 
@@ -18,26 +18,26 @@ func NewController(db *gorm.DB) *Controller {
 	return &Controller{db: db}
 }
 
-func (ctrl *Controller) getTodoItems(todo_list_id uint) []tsdtModels.TodoItem {
-	var items []tsdtModels.TodoItem
+func (ctrl *Controller) getTodoItems(todo_list_id uint) []TodoItem {
+	var items []TodoItem
 	ctrl.db.Where("todo_list_id = ?", todo_list_id).Find(&items)
 	return items
 }
 
-func (ctrl *Controller) createTodoList() tsdtModels.TodoList {
-	list := tsdtModels.TodoList{TodoItems: []tsdtModels.TodoItem{}}
+func (ctrl *Controller) createTodoList() TodoList {
+	list := TodoList{TodoItems: []TodoItem{}}
 	ctrl.db.Create(&list)
 	return list
 }
 
-func (ctrl *Controller) createTodoItem(description string, todoListID uint) tsdtModels.TodoItem {
-	item := tsdtModels.TodoItem{Description: description, TodoListID: todoListID}
+func (ctrl *Controller) createTodoItem(description string, todoListID uint) TodoItem {
+	item := TodoItem{Description: description, TodoListID: todoListID}
 	ctrl.db.Create(&item)
 	return item
 }
 
 func (ctrl *Controller) HomePage(c *gin.Context) {
-	apiAddress := tsdtModels.ApiAddress{NewItem: "/new"}
+	apiAddress := ApiAddress{NewItem: "/new"}
 	c.HTML(http.StatusOK, "homepage.tmpl", gin.H{
 		"Items": nil,
 		"Title": "Start a new to-do list",
@@ -58,10 +58,10 @@ func (ctrl *Controller) GetList(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 	}
-	var list tsdtModels.TodoList
+	var list TodoList
 	ctrl.db.First(&list, id)
 	items := ctrl.getTodoItems(list.ID)
-	apiAddress := tsdtModels.ApiAddress{NewItem: fmt.Sprintf("/%d/new", id)}
+	apiAddress := ApiAddress{NewItem: fmt.Sprintf("/%d/new", id)}
 	c.HTML(200, "homepage.tmpl", gin.H{
 		"Items": items,
 		"Title": "Your to-do list",

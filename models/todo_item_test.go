@@ -34,10 +34,10 @@ func removeDatabase(dbName string) {
 func TestNewTodoList(t *testing.T) {
 	db, dbName := createTempDatabase()
 	list := NewTodoList()
-	// save the new todo list
+	// save the new list
 	db.Create(list)
 
-	// read the todo list from the database
+	// read the list from the database
 	var savedList TodoList
 	db.First(&savedList)
 
@@ -48,14 +48,14 @@ func TestNewTodoList(t *testing.T) {
 func TestNewTodoItem(t *testing.T) {
 	db, dbName := createTempDatabase()
 	list := NewTodoList()
-	// save the new todo list
+	// save the new list
 	db.Create(list)
 
 	item := NewTodoItem("Buy Milk", list.ID)
-	// save the new todo item
+	// save the new item
 	db.Create(item)
 
-	// read the todo item from the database
+	// read the item from the database
 	var savedItem TodoItem
 	db.First(&savedItem)
 
